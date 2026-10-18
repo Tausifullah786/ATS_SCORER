@@ -1,0 +1,31 @@
+.DS_Store
+
+# Local credentials and Streamlit secrets
+.env
+.env.*
+!.env.example
+!.env.sample
+secrets.toml
+
+# Python environments and generated files
+venv/
+.venv/
+*.py[cod]
+.pytest_cache/
+
+# Local scratch files and generated reports
+/tmp/
+/output/
+
+__pycache__/
+
+
+# Datasets
+*.csv
+
+# Logs
+*.log
+
+# ML models
+*.safetensors
+*.pkl
