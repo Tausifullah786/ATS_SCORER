@@ -4,7 +4,7 @@ from pathlib import Path
 
 # Put the repo root on sys.path so `from frontend.views import ...` resolves
 # regardless of the directory streamlit was launched from.
-sys.path.insert(0, str(Path(__file__).parent.parent))
+sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 
 # Configure page
 st.set_page_config(
@@ -50,8 +50,8 @@ if (
 #Load custom CSS
 def load_css():
     try:
-        css_path = Path(__file__).parent / 'assets' / 'styles.css'
-        with open(css_path, 'r') as f:
+        css_path = Path(__file__).resolve().parent / 'assets' / 'theme.css'
+        with open(css_path, 'r', encoding='utf-8') as f:
             return f'<style>{f.read()}</style>'
     except FileNotFoundError:
         return ''
@@ -64,21 +64,28 @@ if 'current_view' not in st.session_state:
 
 # Sidebar navigation
 with st.sidebar:
+    st.markdown('''<div class="sidebar-brand"><span class="brand-mark" aria-hidden="true">↗</span>
+        <div><strong>ATS Scorer<span class="brand-dot">.</span></strong><small>YOUR RESUME WORKSPACE</small></div>
+        </div>''', unsafe_allow_html=True)
     st.markdown("## Navigation")
     
-    if st.button("🏠 Home", use_container_width=True):
+    if st.button("🏠 Home", use_container_width=True, key="nav_home",
+                 type="primary" if st.session_state.current_view == 'landing' else "secondary"):
         st.session_state.current_view = 'landing'
         st.rerun()
     
-    if st.button("🎯 ATS Scorer", use_container_width=True):
+    if st.button("🎯 ATS Scorer", use_container_width=True, key="nav_scorer",
+                 type="primary" if st.session_state.current_view == 'scorer' else "secondary"):
         st.session_state.current_view = 'scorer'
         st.rerun()
     
-    if st.button("📊 History", use_container_width=True):
+    if st.button("📊 History", use_container_width=True, key="nav_history",
+                 type="primary" if st.session_state.current_view == 'history' else "secondary"):
         st.session_state.current_view = 'history'
         st.rerun()
     
-    if st.button("📚 Resources", use_container_width=True):
+    if st.button("📚 Resources", use_container_width=True, key="nav_resources",
+                 type="primary" if st.session_state.current_view == 'resources' else "secondary"):
         st.session_state.current_view = 'resources'
         st.rerun()
     
@@ -159,6 +166,9 @@ with st.sidebar:
             )
 
 # Main content area - render based on current view
+st.markdown('<div class="workspace-bar"><span>YOUR CAREER WORKSPACE</span>'
+            '<span class="workspace-tag">RESUME INTELLIGENCE</span></div>', unsafe_allow_html=True)
+
 if st.session_state.current_view == 'landing':
     # Import and render landing page
     from frontend.views import landing

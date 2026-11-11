@@ -20,30 +20,32 @@ def display_results_dashboard(analysis: Dict[str, Any]) -> None:
     section reads the fields it needs directly.
     """
     display_overall_score(analysis)
-    st.markdown("---")
 
     display_score_breakdown(analysis)
-    st.markdown("---")
 
-    display_strengths(analysis.get("strengths") or [])
-    st.markdown("---")
+    left, right = st.columns(2, gap="medium")
+    with left:
+        with st.container(key="result_strengths"):
+            display_strengths(analysis.get("strengths") or [])
 
-    display_critical_issues(analysis)
-    st.markdown("---")
+    with right:
+        with st.container(key="result_issues"):
+            display_critical_issues(analysis)
 
-    display_skill_validation(analysis)
-    st.markdown("---")
+    with st.container(key="result_skills"):
+        display_skill_validation(analysis)
 
     # JD comparison only shows up if the user actually submitted a JD.
     jd_comparison = analysis.get("jd_comparison") or analysis.get("jd_match_analysis")
     if jd_comparison:
-        display_jd_comparison(jd_comparison)
-        st.markdown("---")
+        with st.container(key="result_jd"):
+            display_jd_comparison(jd_comparison)
 
-    display_detailed_feedback(analysis)
-    st.markdown("---")
+    with st.container(key="result_feedback"):
+        display_detailed_feedback(analysis)
 
-    display_action_items(analysis)
-    st.markdown("---")
+    with st.container(key="result_actions"):
+        display_action_items(analysis)
 
-    display_recommendations(analysis)
+    with st.container(key="result_recommendations"):
+        display_recommendations(analysis)

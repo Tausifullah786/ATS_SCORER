@@ -65,7 +65,7 @@ def _summary_text(analysis: dict) -> str:
 
 def _render_upload_area(analysis_mode: str):
     """Two-column upload widgets. Returns (resume_file, jd_file, jd_text)."""
-    left, right = st.columns(2)
+    left, right = st.container(key="upload_workspace").columns(2, gap="medium")
 
     with left:
         st.markdown("### 📄 Upload Resume")

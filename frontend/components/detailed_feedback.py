@@ -1,4 +1,5 @@
 from typing import Any, Dict, List
+from html import escape
 
 import streamlit as st
 
@@ -28,10 +29,9 @@ def _render_issue(issue: Dict[str, Any]) -> None:
 
     st.markdown(
         f"""
-        <div style="border-left:4px solid {text_color}; background-color:{bg_color};
-                    padding:0.75rem 1rem; border-radius:6px; margin-bottom:0.5rem;">
-            <strong style="color:{text_color};">{icon} {title}</strong>
-            <span style="color:#666; margin-left:0.5rem; font-size:0.85rem;">{impact}</span>
+        <div class="issue-banner" style="--issue-color:{text_color}; --issue-bg:{bg_color};">
+            <strong>{icon} {escape(str(title))}</strong>
+            <span>{escape(str(impact))}</span>
         </div>
         """,
         unsafe_allow_html=True,

@@ -10,7 +10,7 @@ def render():
     # ATS Tips
     st.markdown("## 🎯 ATS Optimization Tips")
     
-    col1, col2 = st.columns(2)
+    col1, col2 = st.container(key="resource_tips").columns(2, gap="medium")
     
     with col1:
         st.markdown("""
@@ -41,7 +41,7 @@ def render():
     # Common ATS Keywords
     st.markdown("## 🔑 Common ATS Keywords by Industry")
     
-    tab1, tab2, tab3 = st.tabs(["💻 Tech", "💼 Business", "🎨 Creative"])
+    tab1, tab2, tab3 = st.container(key="resource_keywords").tabs(["💻 Tech", "💼 Business", "🎨 Creative"])
     
     with tab1:
         st.markdown("""

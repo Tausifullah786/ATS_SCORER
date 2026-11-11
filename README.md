@@ -15,7 +15,21 @@ project uses legacy HS256 user tokens, also set `SUPABASE_JWT_SECRET`.
 Start the Streamlit frontend from the project root in a separate terminal:
 
 ```powershell
-.\backend\venv\Scripts\python.exe -m streamlit run frontend/streamlit_app.py
+.\run_frontend.ps1
+```
+
+If your terminal is already in `D:\ATS_SCORER\frontend`, run
+`..\run_frontend.ps1` instead. The launcher uses `backend/venv` explicitly and
+loads the frontend's Streamlit configuration. Additional Streamlit options can
+be passed through, for example `.\run_frontend.ps1 --server.port 8502`.
+
+If you see `ModuleNotFoundError: No module named 'supabase'` after using the bare
+`streamlit run` command, Streamlit may be running in a different Python
+environment (such as Anaconda). Use the launcher above. If dependencies are
+missing from the project environment, install them from the project root:
+
+```powershell
+.\backend\venv\Scripts\python.exe -m pip install -r requirements.txt
 ```
 
 The frontend also reads the project-root `.env` and `backend/.env`, with the

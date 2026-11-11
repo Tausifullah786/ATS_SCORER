@@ -1,4 +1,5 @@
 from typing import Any, Dict
+from html import escape
 
 import streamlit as st
 
@@ -24,21 +25,21 @@ def display_overall_score(analysis: Dict[str, Any]) -> None:
     emoji = get_score_emoji(score)
 
     st.markdown("## 📊 Analysis Results")
-    _, mid, _ = st.columns([1, 2, 1])
-    with mid:
-        st.markdown(
-            f"""
-            <div style="text-align:center; padding:2rem; background-color:{bg_color};
-                        border-radius:15px; box-shadow:0 4px 6px rgba(0,0,0,0.1);">
-                <h1 style="color:{text_color}; font-size:4.5rem; margin:0; font-weight:bold;">
-                    {emoji} {score:.0f}
-                </h1>
-                <h3 style="color:{text_color}; margin:0.5rem 0;">Overall ATS Score</h3>
-                <p style="color:#666; margin-top:0.5rem;">{interpretation}</p>
+    st.markdown(
+        f"""
+        <div class="score-card" style="--score-color:{text_color}; --score-bg:{bg_color}; --score-percent:{min(max(score, 0), 100)}%;">
+            <div class="score-ring" aria-label="ATS score: {score:.0f} out of 100">
+                <span class="score-value">{score:.0f}</span><span class="score-total">OUT OF 100</span>
             </div>
-            """,
-            unsafe_allow_html=True,
-        )
+            <div class="score-copy">
+                <div class="score-overline">{emoji} RESUME ASSESSMENT</div>
+                <h3>Overall ATS Score</h3>
+                <p>{escape(str(interpretation))}</p>
+            </div>
+        </div>
+        """,
+        unsafe_allow_html=True,
+    )
 
 
 def display_score_breakdown(analysis: Dict[str, Any]) -> None:
@@ -46,22 +47,21 @@ def display_score_breakdown(analysis: Dict[str, Any]) -> None:
     component_scores = analysis.get("component_scores") or {}
     st.markdown("### 📈 Score Breakdown")
 
-    left, right = st.columns(2)
+    left, right = st.columns(2, gap="medium")
     for i, (label, key, max_score, icon) in enumerate(COMPONENTS):
         value = float(component_scores.get(key, 0))
         percentage = value / max_score if max_score else 0
-        bar_color = "green" if percentage >= 0.8 else "orange" if percentage >= 0.6 else "red"
+        bar_color = "#137567" if percentage >= 0.8 else "#c68b32" if percentage >= 0.6 else "#cd5b65"
 
         with left if i % 2 == 0 else right:
-            st.markdown(f"**{icon} {label}**")
             st.markdown(
                 f"""
-                <div style="background-color:#e0e0e0; border-radius:10px; height:20px; margin-bottom:5px;">
-                    <div style="background-color:{bar_color}; width:{percentage * 100}%;
-                                height:100%; border-radius:10px; transition:width 0.5s;"></div>
+                <div class="breakdown-card">
+                    <div class="breakdown-label"><strong>{icon} {label}</strong><span>{value:.0f} / {max_score}</span></div>
+                    <div class="score-track" role="progressbar" aria-label="{label}" aria-valuenow="{value}" aria-valuemin="0" aria-valuemax="{max_score}">
+                        <span style="background:{bar_color}; width:{min(max(percentage, 0), 1) * 100}%;"></span>
+                    </div>
                 </div>
                 """,
                 unsafe_allow_html=True,
             )
-            st.markdown(f"**{value:.0f}/{max_score}**")
-            st.markdown("")
